@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 import time
 from bs4 import BeautifulSoup
@@ -63,6 +64,9 @@ mi_5mins_today = mi_5mins_today[:-9]
 
 # Close the browser
 browser.close()
+
+# weekday() 方法則以整數形式返回一週中的某一天，其中週一的索引為 0，週日為 6
+weekday = datetime.today().weekday()
 # ===================================================================================================
 # ===================================================================================================
 
@@ -132,7 +136,10 @@ df_table = table[0]
 # 所有合約 未沖銷契約量
 # --------------------
 try:
-    mtx_total_open_position = int(df_table[12][11])
+    if weekday == 2:
+        mtx_total_open_position = int(df_table[12][12])
+    else:
+        mtx_total_open_position = int(df_table[12][11])
     # print(futDailyMarketExcel_today,
     #      ' 小型臺指->所有合約 未沖銷契約量 : ', mtx_total_open_position)
 except:
