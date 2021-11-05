@@ -34,33 +34,39 @@ browser = webdriver.Chrome(
 browser.get('https://www.taifex.com.tw/cht/3/futContractsDateExcel')
 soup = BeautifulSoup(browser.page_source, 'lxml')
 futContractsDateExcel_today = soup.find('p').span.find_next('span').string
-#print('三大法人-區分各期貨契約 : ', futContractsDateExcel_today)
+# print('三大法人-區分各期貨契約 : ', futContractsDateExcel_today)
 
 # 期貨每日交易行情查詢
 browser.get('https://www.taifex.com.tw/cht/3/futDailyMarketExcel')
 soup = BeautifulSoup(browser.page_source, 'lxml')
 futDailyMarketExcel_today = soup.find('p').string
-#print('期貨每日交易行情查詢 : ', futDailyMarketExcel_today)
+# print('期貨每日交易行情查詢 : ', futDailyMarketExcel_today)
 
 # 三大法人買賣金額統計表
 browser.get('https://www.twse.com.tw/fund/BFI82U?response=html')
 soup = BeautifulSoup(browser.page_source, 'lxml')
 fund_today = soup.find('th').div.string[:-12]
-#print('三大法人買賣金額統計表 : ', fund_today)
+# print('三大法人買賣金額統計表 : ', fund_today)
 
 # 每5秒委託成交統計
 browser.get('https://www.twse.com.tw/exchangeReport/MI_5MINS?response=html')
 soup = BeautifulSoup(browser.page_source, 'lxml')
 mi_5mins_today = soup.find('th').div.string
 mi_5mins_today = mi_5mins_today[:-9]
-#print('加權指數 每5秒委託成交統計 : ', mi_5mins_today)
+# print('加權指數 每5秒委託成交統計 : ', mi_5mins_today)
 
 # 每5秒指數統計
 # browser.get('https://www.twse.com.tw/exchangeReport/MI_5MINS_INDEX?response=html')
-#soup = BeautifulSoup(browser.page_source, 'lxml')
-#mi_5mins_index_today = soup.find('th').div.string
-#mi_5mins_index_today = mi_5mins_index_today[:-7]
-##print('加權指數 每5秒指數統計 : ', mi_5mins_index_today)
+# soup = BeautifulSoup(browser.page_source, 'lxml')
+# mi_5mins_index_today = soup.find('th').div.string
+# mi_5mins_index_today = mi_5mins_index_today[:-7]
+# print('加權指數 每5秒指數統計 : ', mi_5mins_index_today)
+
+# 期貨大額交易人未沖銷部位結構表
+browser.get('https://www.taifex.com.tw/cht/3/largeTraderFutQryTbl')
+soup = BeautifulSoup(browser.page_source, 'lxml')
+largeTraderFutQryTbl_today = soup.find('p').string
+# print('期貨大額交易人未沖銷部位結構表 : ', largeTraderFutQryTbl_today)
 
 # Close the browser
 browser.close()
@@ -182,6 +188,30 @@ twse_today_diff = round(twse_today_diff, 2)
 inside_fund_trade_number = twse_today_diff - foreign_fund_trade_number
 inside_fund_trade_number = round(inside_fund_trade_number, 2)
 print(fund_today, ' 三大法人買賣金額->內資 : ', inside_fund_trade_number, ' 億')
+
+# --------------------
+# 期貨大額交易人未沖銷部位結構表
+# --------------------
+table = pd.read_html(
+    'https://www.taifex.com.tw/cht/3/largeTraderFutQryTbl')
+df_table = table[1]
+numpy_table = df_table.to_numpy()
+all_feature_top_ten_long_open_position = numpy_table[2][4][:6]
+all_feature_top_ten_long_open_position = all_feature_top_ten_long_open_position.replace(
+    ',', '')
+all_feature_top_ten_long_open_position = int(
+    all_feature_top_ten_long_open_position)
+
+all_feature_top_ten_short_open_position = numpy_table[2][8][:6]
+all_feature_top_ten_short_open_position = all_feature_top_ten_short_open_position.replace(
+    ',', '')
+all_feature_top_ten_short_open_position = int(
+    all_feature_top_ten_short_open_position)
+
+print(largeTraderFutQryTbl_today, ' 期貨大額交易人未沖銷部位->多方->口數 : ',
+      all_feature_top_ten_long_open_position)
+# print(largeTraderFutQryTbl_today, ' 期貨大額交易人未沖銷部位->空方->口數 : ',
+#      all_feature_top_ten_short_open_position)
 # ===================================================================================================
 # ===================================================================================================
 print('===================================================================================================')
@@ -257,7 +287,6 @@ else:
 
 
 # 透過名稱取得工作表
-# 透過名稱取得工作表
 sheet = wb['大盤多空點位']
 if sheet.cell(row=2, column=1).value != mi_5mins_today:
     sheet.insert_rows(2)
@@ -297,6 +326,28 @@ if sheet.cell(row=2, column=1).value != mi_5mins_today:
 
 else:
     print(mi_5mins_today, ' 大盤多空點位 ... already up to date')
+
+
+# 期貨大額交易人未沖銷部位
+sheet = wb['期貨大額交易人未沖銷部位']
+if sheet.cell(row=2, column=1).value != largeTraderFutQryTbl_today:
+    sheet.insert_rows(2)
+    sheet.cell(row=2, column=1, value=largeTraderFutQryTbl_today)
+    sheet.cell(row=2, column=2, value=all_feature_top_ten_long_open_position)
+    sheet.cell(row=2, column=3, value=all_feature_top_ten_short_open_position)
+    sheet.cell(row=2, column=4, value=(all_feature_top_ten_long_open_position -
+               sheet.cell(row=3, column=2).value))
+    sheet.cell(row=2, column=5, value=(all_feature_top_ten_long_open_position -
+               sheet.cell(row=3, column=3).value))
+    #T.B.D.
+    sheet.cell(row=2, column=10, value=foreign_feature_open_position)
+
+    # 儲存 Excel 檔案
+    wb.save(
+        'C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\everyday_ver2.xlsx')
+    print(mi_5mins_today, ' 期貨大額交易人未沖銷部位 ... update !!!')
+else:
+    print(mi_5mins_today, ' 期貨大額交易人未沖銷部位 ... already up to date')
 # ===================================================================================================
 # ===================================================================================================
 print('===================================================================================================')
