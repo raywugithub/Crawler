@@ -93,8 +93,14 @@ df_table = table[1]
 # 外資
 # --------------------
 foreign_feature_open_position = df_table[13][5]
+foreign_feature_long_open_position = df_table[9][5]
+foreign_feature_short_open_position = df_table[11][5]
 try:
     foreign_feature_open_position = int(foreign_feature_open_position)
+    foreign_feature_long_open_position = int(
+        foreign_feature_long_open_position)
+    foreign_feature_short_open_position = int(
+        foreign_feature_short_open_position)
     print(futContractsDateExcel_today, ' 臺股期貨->外資->未平倉餘額->多空淨額->口數 : ',
           foreign_feature_open_position)
 except:
@@ -339,15 +345,36 @@ if sheet.cell(row=2, column=1).value != largeTraderFutQryTbl_today:
                sheet.cell(row=3, column=2).value))
     sheet.cell(row=2, column=5, value=(all_feature_top_ten_long_open_position -
                sheet.cell(row=3, column=3).value))
-    #T.B.D.
+    sheet.cell(row=2, column=6, value=foreign_feature_long_open_position)
+    sheet.cell(row=2, column=7, value=foreign_feature_short_open_position)
+    sheet.cell(row=2, column=8, value=foreign_feature_long_open_position -
+               sheet.cell(row=3, column=6).value)
+    sheet.cell(row=2, column=9, value=foreign_feature_short_open_position -
+               sheet.cell(row=3, column=7).value)
     sheet.cell(row=2, column=10, value=foreign_feature_open_position)
+    sheet.cell(row=2, column=11, value=foreign_feature_open_position -
+               sheet.cell(row=3, column=10).value)
+    sheet.cell(row=2, column=12, value=sheet.cell(
+        row=2, column=4).value - sheet.cell(row=2, column=8).value)
+    sheet.cell(row=2, column=13, value=sheet.cell(
+        row=2, column=5).value - sheet.cell(row=2, column=9).value)
+    sheet.cell(row=2, column=14, value=sheet.cell(
+        row=2, column=12).value - sheet.cell(row=2, column=13).value)
 
     # 儲存 Excel 檔案
     wb.save(
         'everyday_ver2.xlsx')
     print(mi_5mins_today, ' 期貨大額交易人未沖銷部位 ... update !!!')
+    print('\t', sheet.cell(row=1, column=10).value,
+          ' : ', sheet.cell(row=2, column=10).value)
+    print('\t', sheet.cell(row=1, column=14).value,
+          ' : ', sheet.cell(row=2, column=14).value)
 else:
     print(mi_5mins_today, ' 期貨大額交易人未沖銷部位 ... already up to date')
+    print('\t', sheet.cell(row=1, column=11).value,
+          ' : ', sheet.cell(row=2, column=11).value)
+    print('\t', sheet.cell(row=1, column=14).value,
+          ' : ', sheet.cell(row=2, column=14).value)
 # ===================================================================================================
 # ===================================================================================================
 print('===================================================================================================')
