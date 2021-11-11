@@ -29,7 +29,7 @@ print('=========================================================================
 # ===================================================================================================
 # 三大法人-區分各期貨契約
 browser = webdriver.Chrome(
-    chrome_options=chrome_options, executable_path="C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\chromedriver.exe")
+    chrome_options=chrome_options, executable_path="chromedriver.exe")
 
 browser.get('https://www.taifex.com.tw/cht/3/futContractsDateExcel')
 soup = BeautifulSoup(browser.page_source, 'lxml')
@@ -219,7 +219,7 @@ print('=========================================================================
 # ===================================================================================================
 # 讀取 Excel 檔案
 wb = load_workbook(
-    'C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\everyday_ver2.xlsx')
+    'everyday_ver2.xlsx')
 
 
 # 透過名稱取得工作表
@@ -232,7 +232,7 @@ if sheet.cell(row=2, column=1).value != fund_today:
     sheet.cell(row=2, column=3, value=inside_fund_trade_number)  # 內資
 
     # 儲存 Excel 檔案
-    wb.save('C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\everyday_ver2.xlsx')
+    wb.save('everyday_ver2.xlsx')
     print(fund_today, ' 三大法人買賣金額 ... update !!!')
 else:
     print(fund_today, ' 三大法人買賣金額 ... already up to date')
@@ -280,7 +280,7 @@ if sheet.cell(row=2, column=1).value != futDailyMarketExcel_today:
     sheet.cell(row=2, column=6, value=int(total_average_price))
 
     # 儲存 Excel 檔案
-    wb.save('C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\everyday_ver2.xlsx')
+    wb.save('everyday_ver2.xlsx')
     print(futDailyMarketExcel_today, ' 台指期換倉成本 ... update !!!')
 else:
     print(futDailyMarketExcel_today, ' 台指期換倉成本 ... already up to date')
@@ -319,7 +319,7 @@ if sheet.cell(row=2, column=1).value != mi_5mins_today:
 
             # 儲存 Excel 檔案
             wb.save(
-                'C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\everyday_ver2.xlsx')
+                'everyday_ver2.xlsx')
             print(mi_5mins_today, ' 大盤多空點位 ... update !!!')
     except:
         print('exception')
@@ -344,7 +344,7 @@ if sheet.cell(row=2, column=1).value != largeTraderFutQryTbl_today:
 
     # 儲存 Excel 檔案
     wb.save(
-        'C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\everyday_ver2.xlsx')
+        'everyday_ver2.xlsx')
     print(mi_5mins_today, ' 期貨大額交易人未沖銷部位 ... update !!!')
 else:
     print(mi_5mins_today, ' 期貨大額交易人未沖銷部位 ... already up to date')
