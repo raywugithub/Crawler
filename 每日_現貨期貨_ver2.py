@@ -111,11 +111,14 @@ except:
 # 未平倉餘額 / 多空淨額 / 口數
 # 自營商 + 投信 + 外資
 # --------------------
-mtx_three_foreign_feature_open_position = int(df_table[13][12])
-mtx_three_foreign_feature_open_position += int(df_table[13][13])
-mtx_three_foreign_feature_open_position += int(df_table[13][14])
-# print(futContractsDateExcel_today, ' 小型臺指期貨->三大法人->未平倉餘額->多空淨額->加總口數 : ',
-#      mtx_three_foreign_feature_open_position)
+try:
+    mtx_three_foreign_feature_open_position = int(df_table[13][12])
+    mtx_three_foreign_feature_open_position += int(df_table[13][13])
+    mtx_three_foreign_feature_open_position += int(df_table[13][14])
+    # print(futContractsDateExcel_today, ' 小型臺指期貨->三大法人->未平倉餘額->多空淨額->加總口數 : ',
+    #      mtx_three_foreign_feature_open_position)
+except:
+    print('小型臺指期貨 ... 未平倉餘額 ... data are not ready yet!!!')
 # ===================================================================================================
 # ===================================================================================================
 # 期貨每日交易行情查詢 / 臺股期貨  ( TX ) 行情表
@@ -134,7 +137,7 @@ try:
     #      tx_next_month_contract, ' 最後成交價: ', tx_next_month_close_price, ' 未沖銷契約量 : ',
     #      tx_next_month_open_position)
 except:
-    print('期貨每日交易行情查詢 ... data are not ready yet!!!')
+    print('期貨每日交易行情查詢 / 臺股期貨  ( TX ) 行情表 ... data are not ready yet!!!')
 
 # --------------------
 # 期貨每日交易行情查詢 / 小型臺指  ( MTX ) 行情表
@@ -148,20 +151,24 @@ df_table = table[0]
 # 所有合約 未沖銷契約量
 # --------------------
 try:
-    if weekday == 2:
-        mtx_total_open_position = int(df_table[12][12])
-    else:
-        mtx_total_open_position = int(df_table[12][11])
+    # if weekday == 2:
+    #    mtx_total_open_position = int(df_table[12][12])
+    # else:
+    #    mtx_total_open_position = int(df_table[12][11])
+    mtx_total_open_position = int(df_table[12].dropna().to_list()[-1])
     # print(futDailyMarketExcel_today,
     #      ' 小型臺指->所有合約 未沖銷契約量 : ', mtx_total_open_position)
 except:
-    print('期貨每日交易行情查詢 ... data are not ready yet!!!')
+    print('期貨每日交易行情查詢 / 小型臺指  ( MTX ) 行情表 ... data are not ready yet!!!')
 
 # 散戶多空力道
-mtx_small_open_position = (
-    (-1)*mtx_three_foreign_feature_open_position)/mtx_total_open_position
-mtx_small_open_position = round(mtx_small_open_position, 2)
-print(futDailyMarketExcel_today, ' 散戶多空力道 : ', mtx_small_open_position)
+try:
+    mtx_small_open_position = (
+        (-1)*mtx_three_foreign_feature_open_position)/mtx_total_open_position
+    mtx_small_open_position = round(mtx_small_open_position, 2)
+    #print(futDailyMarketExcel_today, ' 散戶多空力道 : ', mtx_small_open_position)
+except:
+    print('散戶多空力道 ... data are not ready yet!!!')
 # ===================================================================================================
 # ===================================================================================================
 print('===================================================================================================')
@@ -214,8 +221,8 @@ all_feature_top_ten_short_open_position = all_feature_top_ten_short_open_positio
 all_feature_top_ten_short_open_position = int(
     all_feature_top_ten_short_open_position)
 
-print(largeTraderFutQryTbl_today, ' 期貨大額交易人未沖銷部位->多方->口數 : ',
-      all_feature_top_ten_long_open_position)
+# print(largeTraderFutQryTbl_today, ' 期貨大額交易人未沖銷部位->多方->口數 : ',
+#      all_feature_top_ten_long_open_position)
 # print(largeTraderFutQryTbl_today, ' 期貨大額交易人未沖銷部位->空方->口數 : ',
 #      all_feature_top_ten_short_open_position)
 # ===================================================================================================
@@ -249,14 +256,21 @@ sheet = wb['散戶多空力道']
 if sheet.cell(row=2, column=1).value != futDailyMarketExcel_today:
     sheet.insert_rows(2)
     sheet.cell(row=2, column=1, value=futDailyMarketExcel_today)
-    sheet.cell(row=2, column=2,
-               value=mtx_small_open_position)
+    try:
+        sheet.cell(row=2, column=2,
+                   value=mtx_small_open_position)
 
-    # 儲存 Excel 檔案
-    wb.save('C:\\Users\\RayWu\\OneDrive - AAEON Technology\\_OLD\\Documents\\Python\\Crawler\\everyday_ver2.xlsx')
-    print(fund_today, ' 散戶多空力道 ... update !!!')
+        # 儲存 Excel 檔案
+        wb.save('everyday_ver2.xlsx')
+        print(fund_today, ' 散戶多空力道 ... update !!!')
+        print('\t', sheet.cell(row=1, column=2).value, ' : ', sheet.cell(
+            row=3, column=2).value, '->', sheet.cell(row=2, column=2).value)
+    except:
+        print('散戶多空力道 ... data are not ready yet!!!')
 else:
     print(futDailyMarketExcel_today, ' 散戶多空力道 ... already up to date')
+    print('\t', sheet.cell(row=1, column=2).value, ' : ', sheet.cell(
+        row=3, column=2).value, '->', sheet.cell(row=2, column=2).value)
 
 
 # 透過名稱取得工作表
