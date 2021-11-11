@@ -379,8 +379,8 @@ if sheet.cell(row=2, column=1).value != largeTraderFutQryTbl_today:
     wb.save(
         'everyday_ver2.xlsx')
     print(mi_5mins_today, ' 期貨大額交易人未沖銷部位 ... update !!!')
-    print('\t', sheet.cell(row=1, column=10).value,
-          ' : ', sheet.cell(row=2, column=10).value)
+    print('\t', sheet.cell(row=1, column=11).value,
+          ' : ', sheet.cell(row=2, column=11).value)
     print('\t', sheet.cell(row=1, column=14).value,
           ' : ', sheet.cell(row=2, column=14).value)
 else:
