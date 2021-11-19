@@ -357,7 +357,7 @@ if sheet.cell(row=2, column=1).value != largeTraderFutQryTbl_today:
     sheet.cell(row=2, column=3, value=all_feature_top_ten_short_open_position)
     sheet.cell(row=2, column=4, value=(all_feature_top_ten_long_open_position -
                sheet.cell(row=3, column=2).value))
-    sheet.cell(row=2, column=5, value=(all_feature_top_ten_long_open_position -
+    sheet.cell(row=2, column=5, value=(all_feature_top_ten_short_open_position -
                sheet.cell(row=3, column=3).value))
     sheet.cell(row=2, column=6, value=foreign_feature_long_open_position)
     sheet.cell(row=2, column=7, value=foreign_feature_short_open_position)
